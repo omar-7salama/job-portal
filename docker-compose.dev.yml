@@ -50,8 +50,8 @@ services:
 
   user-service:
     build:
-      context: ./user-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: user-service/Dockerfile
     container_name: user-service-dev
     ports:
       - "8081:8081"
@@ -67,8 +67,8 @@ services:
 
   job-service:
     build:
-      context: ./job-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: job-service/Dockerfile
     container_name: job-service-dev
     ports:
       - "8082:8082"
@@ -84,8 +84,8 @@ services:
 
   application-service:
     build:
-      context: ./application-service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: application-service/Dockerfile
     container_name: application-service-dev
     ports:
       - "8083:8083"
@@ -104,12 +104,14 @@ services:
       - jobportal-network
 
 # ─── Volumes ─────────────────────────────────────────────
+
 volumes:
   userdb_data_dev:
   jobdb_data_dev:
   applicationdb_data_dev:
 
 # ─── Network ─────────────────────────────────────────────
+
 networks:
   jobportal-network:
     driver: bridge
