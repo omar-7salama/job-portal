@@ -1,21 +1,18 @@
 FROM maven:3.9.9-eclipse-temurin-17-alpine AS build
+
 WORKDIR /app
 
 COPY pom.xml .
-COPY .mvn .mvn
-COPY mvnw mvnw
-RUN chmod +x mvnw && ./mvnw -q -DskipTests dependency:go-offline
+COPY src ./src
 
-COPY src src
-RUN ./mvnw -q -DskipTests package
+RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:17-jre-alpine
+
 WORKDIR /app
 
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring:spring
+COPY --from=build /app/target/*.jar app.jar
 
-COPY --from=build /app/target/application-service-0.0.1-SNAPSHOT.jar app.jar
+EXPOSE 8080
 
-EXPOSE 8083
-ENTRYPOINT ["java", "-jar", "/app/app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
