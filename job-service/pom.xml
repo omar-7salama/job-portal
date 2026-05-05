@@ -4,13 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.3.0</version>
-        <relativePath/>
+             <groupId>com.jobportal</groupId>
+             <artifactId>job-portal</artifactId>  <!-- Reference your parent POM -->
+             <version>1.0.0</version>
+             <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <groupId>com.jobportal</groupId>
     <artifactId>job-service</artifactId>
     <version>1.0.0</version>
     <name>job-service</name>
