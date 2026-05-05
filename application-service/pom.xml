@@ -10,8 +10,7 @@
         <version>3.3.0</version>
         <relativePath/>
     </parent>
-
-    <groupId>com.jobportal</groupId>
+         
     <artifactId>application-service</artifactId>
     <version>1.0.0</version>
     <name>application-service</name>
