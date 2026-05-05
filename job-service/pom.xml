@@ -6,7 +6,7 @@
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
     <version>3.3.0</version>
-</parent>
+    </parent>
     <artifactId>job-service</artifactId>
     <name>job-service</name>
     <description>Job Portal Job Service</description>
