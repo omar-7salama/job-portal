@@ -2,13 +2,11 @@ FROM maven:3.9.9-eclipse-temurin-17-alpine AS build
 
 WORKDIR /app
 
-# Copy only user-service project
-COPY user-service/pom.xml user-service/pom.xml
-COPY user-service/src user-service/src
+# Copy EVERYTHING (important)
+COPY . .
 
-WORKDIR /app/user-service
-
-RUN mvn clean package -DskipTests
+# Build only user-service module
+RUN mvn -pl user-service -am clean package -DskipTests
 
 FROM eclipse-temurin:17-jre-alpine
 
