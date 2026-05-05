@@ -17,6 +17,6 @@ USER app
 
 COPY --from=build /app/user-service/target/*.jar app.jar
 
-EXPOSE 8081
+EXPOSE 8083
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
