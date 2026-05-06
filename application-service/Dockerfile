@@ -5,8 +5,8 @@ WORKDIR /app
 # Copy EVERYTHING (important)
 COPY . .
 
-# Build only user-service module
-RUN mvn -pl user-service -am clean package -DskipTests
+# Build only application-service module
+RUN mvn -pl application-service -am clean package -DskipTests
 
 FROM eclipse-temurin:17-jre-alpine
 
@@ -15,7 +15,7 @@ WORKDIR /app
 RUN addgroup -S app && adduser -S app -G app
 USER app
 
-COPY --from=build /app/user-service/target/*.jar app.jar
+COPY --from=build /app/application-service/target/*.jar app.jar
 
 EXPOSE 8083
 
