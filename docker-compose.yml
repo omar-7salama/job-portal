@@ -1,9 +1,6 @@
 version: '3.8'
-
 services:
-
   # ─── Databases ───────────────────────────────────────────
-
   userdb:
     image: postgres:15
     container_name: userdb-dev
@@ -46,8 +43,7 @@ services:
     networks:
       - jobportal-network
 
-  # ─── Services ────────────────────────────────────────────
-
+  # ─── Backend Services ─────────────────────────────────────
   user-service:
     build:
       context: .
@@ -103,15 +99,28 @@ services:
     networks:
       - jobportal-network
 
-# ─── Volumes ─────────────────────────────────────────────
+  # ─── Frontend ─────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: frontend-dev
+    ports:
+      - "3000:80"
+    depends_on:
+      - user-service
+      - job-service
+      - application-service
+    networks:
+      - jobportal-network
 
+# ─── Volumes ─────────────────────────────────────────────
 volumes:
   userdb_data_dev:
   jobdb_data_dev:
   applicationdb_data_dev:
 
 # ─── Network ─────────────────────────────────────────────
-
 networks:
   jobportal-network:
     driver: bridge
