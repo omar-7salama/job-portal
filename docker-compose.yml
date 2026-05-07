@@ -1,63 +1,67 @@
 version: '3.8'
+
 services:
   # ─── Databases ───────────────────────────────────────────
   userdb:
     image: postgres:15
-    container_name: userdb-dev
     environment:
       POSTGRES_DB: userdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5432:5432"
     volumes:
-      - userdb_data_dev:/var/lib/postgresql/data
+      - userdb_data:/var/lib/postgresql/data
     networks:
       - jobportal-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   jobdb:
     image: postgres:15
-    container_name: jobdb-dev
     environment:
       POSTGRES_DB: jobdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5433:5432"
     volumes:
-      - jobdb_data_dev:/var/lib/postgresql/data
+      - jobdb_data:/var/lib/postgresql/data
     networks:
       - jobportal-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   applicationdb:
     image: postgres:15
-    container_name: applicationdb-dev
     environment:
       POSTGRES_DB: applicationdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-    ports:
-      - "5434:5432"
     volumes:
-      - applicationdb_data_dev:/var/lib/postgresql/data
+      - applicationdb_data:/var/lib/postgresql/data
     networks:
       - jobportal-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   # ─── Backend Services ─────────────────────────────────────
   user-service:
     build:
       context: .
       dockerfile: user-service/Dockerfile
-    container_name: user-service-dev
-    ports:
-      - "8081:8081"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://userdb:5432/userdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_PROFILES_ACTIVE: dev
     depends_on:
-      - userdb
+      userdb:
+        condition: service_healthy
     networks:
       - jobportal-network
 
@@ -65,16 +69,13 @@ services:
     build:
       context: .
       dockerfile: job-service/Dockerfile
-    container_name: job-service-dev
-    ports:
-      - "8082:8082"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://jobdb:5432/jobdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-      SPRING_PROFILES_ACTIVE: dev
     depends_on:
-      - jobdb
+      jobdb:
+        condition: service_healthy
     networks:
       - jobportal-network
 
@@ -82,20 +83,19 @@ services:
     build:
       context: .
       dockerfile: application-service/Dockerfile
-    container_name: application-service-dev
-    ports:
-      - "8083:8083"
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://applicationdb:5432/applicationdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
       USER_SERVICE_URL: http://user-service:8081
       JOB_SERVICE_URL: http://job-service:8082
-      SPRING_PROFILES_ACTIVE: dev
     depends_on:
-      - applicationdb
-      - user-service
-      - job-service
+      applicationdb:
+        condition: service_healthy
+      user-service:
+        condition: service_started
+      job-service:
+        condition: service_started
     networks:
       - jobportal-network
 
@@ -104,9 +104,6 @@ services:
     build:
       context: ./Frontend
       dockerfile: Dockerfile
-    container_name: frontend-dev
-    ports:
-      - "3000:80"
     depends_on:
       - user-service
       - job-service
@@ -116,9 +113,9 @@ services:
 
 # ─── Volumes ─────────────────────────────────────────────
 volumes:
-  userdb_data_dev:
-  jobdb_data_dev:
-  applicationdb_data_dev:
+  userdb_data:
+  jobdb_data:
+  applicationdb_data:
 
 # ─── Network ─────────────────────────────────────────────
 networks:

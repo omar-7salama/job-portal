@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  # ─── Databases ───────────────────────────────────────────
+  userdb:
+    container_name: userdb-test
+    volumes:
+      - userdb_data_test:/var/lib/postgresql/data
+
+  jobdb:
+    container_name: jobdb-test
+    volumes:
+      - jobdb_data_test:/var/lib/postgresql/data
+
+  applicationdb:
+    container_name: applicationdb-test
+    volumes:
+      - applicationdb_data_test:/var/lib/postgresql/data
+
+  # ─── Backend Services ─────────────────────────────────────
+  user-service:
+    container_name: user-service-test
+    ports:
+      - "8181:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+    restart: on-failure
+
+  job-service:
+    container_name: job-service-test
+    ports:
+      - "8182:8082"
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+    restart: on-failure
+
+  application-service:
+    container_name: application-service-test
+    ports:
+      - "8183:8083"
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+    restart: on-failure
+
+  # ─── Frontend ─────────────────────────────────────────────
+  frontend:
+    container_name: frontend-test
+    ports:
+      - "3001:80"
+
+# ─── Volumes ─────────────────────────────────────────────
+volumes:
+  userdb_data_test:
+  jobdb_data_test:
+  applicationdb_data_test:
