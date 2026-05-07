@@ -1,58 +1,45 @@
 version: '3.8'
 
 services:
-  # ─── Databases ───────────────────────────────────────────
+  # ─── Databases (Production) ───────────────────────────────
   userdb:
-    container_name: userdb-prod
     restart: always
     volumes:
       - userdb_data_prod:/var/lib/postgresql/data
 
   jobdb:
-    container_name: jobdb-prod
     restart: always
     volumes:
       - jobdb_data_prod:/var/lib/postgresql/data
 
   applicationdb:
-    container_name: applicationdb-prod
     restart: always
     volumes:
       - applicationdb_data_prod:/var/lib/postgresql/data
 
-  # ─── Backend Services ─────────────────────────────────────
+  # ─── Backend Services (Production - Internal Only) ────────
   user-service:
-    container_name: user-service-prod
-    ports:
-      - "8081:8081"
     environment:
       SPRING_PROFILES_ACTIVE: prod
     restart: always
 
   job-service:
-    container_name: job-service-prod
-    ports:
-      - "8082:8082"
     environment:
       SPRING_PROFILES_ACTIVE: prod
     restart: always
 
   application-service:
-    container_name: application-service-prod
-    ports:
-      - "8083:8083"
     environment:
       SPRING_PROFILES_ACTIVE: prod
     restart: always
 
-  # ─── Frontend ─────────────────────────────────────────────
+  # ─── Frontend (Production) ────────────────���───────────────
   frontend:
-    container_name: frontend-prod
     ports:
       - "8080:80"
     restart: always
 
-# ─── Volumes ─────────────────────────────────────────────
+# ─── Volumes (Production) ──────────────────────────────────
 volumes:
   userdb_data_prod:
   jobdb_data_prod:
