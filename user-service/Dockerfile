@@ -1,0 +1,22 @@
+FROM maven:3.9.9-eclipse-temurin-17-alpine AS build
+
+WORKDIR /app
+
+# Copy EVERYTHING (important)
+COPY . .
+
+# Build only user-service module
+RUN mvn -pl user-service -am clean package -DskipTests
+
+FROM eclipse-temurin:17-jre-alpine
+
+WORKDIR /app
+
+RUN addgroup -S app && adduser -S app -G app
+USER app
+
+COPY --from=build /app/user-service/target/*.jar app.jar
+
+EXPOSE 8081
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
