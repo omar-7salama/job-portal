@@ -1,13 +1,12 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
-import { CreateJobRequest } from '../types';
 
 const PostJob = () => {
   const [form, setForm] = useState({
     title: '',
     description: '',
-    company: '',
+    companyName: '',
     location: '',
     salary: 0,
     jobType: 'FULL_TIME' as 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP',
@@ -21,8 +20,18 @@ const PostJob = () => {
     setLoading(true);
     setError('');
 
+    const employerId = localStorage.getItem('userId');
+    if (!employerId) {
+      setError('You must be logged in to post a job.');
+      setLoading(false);
+      return;
+    }
+
     try {
-      await api.post('/api/jobs', form as CreateJobRequest);
+      await api.post('/api/jobs', {
+        ...form,
+        employerId,
+      });
       navigate('/jobs');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to post job');
@@ -59,11 +68,11 @@ const PostJob = () => {
           />
         </div>
         <div>
-          <label className="block text-gray-700">Company</label>
+          <label className="block text-gray-700">Company Name</label>
           <input
             type="text"
-            value={form.company}
-            onChange={(e) => setForm({ ...form, company: e.target.value })}
+            value={form.companyName}
+            onChange={(e) => setForm({ ...form, companyName: e.target.value })}
             className="w-full p-2 border rounded"
             placeholder="Company name"
             required
