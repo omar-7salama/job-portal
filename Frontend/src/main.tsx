@@ -1,63 +1,59 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import ProtectedRoute from './components/ProtectedRoute';
-import Login from './pages/Login';
-import Jobs from './pages/Jobs';
-import MyApplications from './pages/MyApplications';
-import PostJob from './pages/PostJob';
-import ManageApplications from './pages/ManageApplications';
-import './styles.css';
+import { Link, useNavigate } from 'react-router-dom';
+import { isAuthenticated, removeToken, getUserFromToken } from '../utils/auth';
 
-const App = () => {
+const Navbar = () => {
+  const navigate = useNavigate();
+  const user = getUserFromToken();
+
+  const handleLogout = () => {
+    removeToken();
+    navigate('/login');
+  };
+
   return (
-    <Router>
-      <div className="min-h-screen bg-gray-50">
-        <Navbar />
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route
-            path="/jobs"
-            element={
-              <ProtectedRoute>
-                <Jobs />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/applications"
-            element={
-              <ProtectedRoute>
-                <MyApplications />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/post-job"
-            element={
-              <ProtectedRoute>
-                <PostJob />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-          path="/manage-applications"
-          element={
-            <ProtectedRoute>
-              <ManageApplications />
-            </ProtectedRoute>
-          }
-        />
-          <Route path="/" element={<Navigate to="/jobs" />} />
-        </Routes>
+    <nav className="bg-blue-900 text-white p-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <Link to="/" className="text-xl font-bold">
+          Job Portal
+        </Link>
+        <div className="flex space-x-4 items-center">
+          <Link to="/jobs" className="hover:text-blue-300">
+            Jobs
+          </Link>
+
+          {/* JOB_SEEKER links */}
+          {isAuthenticated() && user?.role === 'JOB_SEEKER' && (
+            <Link to="/applications" className="hover:text-blue-300">
+              My Applications
+            </Link>
+          )}
+
+          {/* EMPLOYER links */}
+          {isAuthenticated() && user?.role === 'EMPLOYER' && (
+            <>
+              <Link to="/post-job" className="hover:text-blue-300">
+                Post a Job
+              </Link>
+              <Link to="/manage-applications" className="hover:text-blue-300">
+                Manage Applications
+              </Link>
+            </>
+          )}
+
+          {/* Auth */}
+          {isAuthenticated() ? (
+            <button onClick={handleLogout} className="hover:text-blue-300">
+              Logout
+            </button>
+          ) : (
+            <Link to="/login" className="hover:text-blue-300">
+              Login
+            </Link>
+          )}
+        </div>
       </div>
-    </Router>
+    </nav>
   );
 };
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+export default Navbar;
