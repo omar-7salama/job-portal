@@ -8,7 +8,7 @@ const api = axios.create({
   },
 });
 
-// Add request interceptor to attach JWT
+// Add request interceptor to attach token
 api.interceptors.request.use(
   (config) => {
     const token = getToken();
@@ -27,8 +27,11 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
+      // Clear all auth data
       localStorage.removeItem('token');
+      localStorage.removeItem('userId');
+      localStorage.removeItem('userRole');
+      localStorage.removeItem('userFullName');
       window.location.href = '/login';
     }
     return Promise.reject(error);
