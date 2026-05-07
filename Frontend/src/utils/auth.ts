@@ -8,26 +8,19 @@ export const setToken = (token: string): void => {
 
 export const removeToken = (): void => {
   localStorage.removeItem('token');
+  localStorage.removeItem('userId');
+  localStorage.removeItem('userRole');
+  localStorage.removeItem('userFullName');
 };
 
-export const decodeToken = (token: string): any => {
-  try {
-    const payload = token.split('.')[1];
-    const decoded = atob(payload);
-    return JSON.parse(decoded);
-  } catch (error) {
-    console.error('Failed to decode token:', error);
-    return null;
-  }
-};
-
-export const getUserFromToken = (): { id: string; role: string } | null => {
-  const token = getToken();
-  if (!token) return null;
-  const decoded = decodeToken(token);
-  return decoded ? { id: decoded.sub, role: decoded.role } : null;
+export const getUserFromToken = (): { id: string; role: string; fullName: string } | null => {
+  const userId = localStorage.getItem('userId');
+  const userRole = localStorage.getItem('userRole');
+  const userFullName = localStorage.getItem('userFullName');
+  if (!userId || !userRole) return null;
+  return { id: userId, role: userRole, fullName: userFullName || '' };
 };
 
 export const isAuthenticated = (): boolean => {
-  return !!getToken();
+  return !!getToken() && !!localStorage.getItem('userId');
 };
