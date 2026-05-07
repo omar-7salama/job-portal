@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Base64;
 import java.util.UUID;
 
 @Service
@@ -27,14 +28,12 @@ public class UserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new BadRequestException("Email is already registered");
         }
-
         User user = User.builder()
                 .fullName(request.getFullName())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(request.getRole())
                 .build();
-
         return mapToResponse(userRepository.save(user));
     }
 
@@ -47,7 +46,18 @@ public class UserService {
             throw new BadRequestException("Invalid email or password");
         }
 
-        return mapToResponse(user);
+        // Generate a simple Base64 token: id:email:role
+        String raw = user.getId() + ":" + user.getEmail() + ":" + user.getRole();
+        String token = Base64.getUrlEncoder().encodeToString(raw.getBytes());
+
+        return UserResponse.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .email(user.getEmail())
+                .role(user.getRole())
+                .createdAt(user.getCreatedAt())
+                .token(token)
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -65,7 +75,6 @@ public class UserService {
         if (request.getFullName() != null && !request.getFullName().isBlank()) {
             user.setFullName(request.getFullName());
         }
-
         if (request.getEmail() != null && !request.getEmail().isBlank()
                 && !request.getEmail().equals(user.getEmail())) {
             if (userRepository.existsByEmail(request.getEmail())) {
@@ -73,11 +82,9 @@ public class UserService {
             }
             user.setEmail(request.getEmail());
         }
-
         if (request.getPassword() != null && !request.getPassword().isBlank()) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
-
         return mapToResponse(userRepository.save(user));
     }
 
