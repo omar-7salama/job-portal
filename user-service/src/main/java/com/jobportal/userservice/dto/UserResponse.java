@@ -21,4 +21,5 @@ public class UserResponse {
     private String email;
     private Role role;
     private LocalDateTime createdAt;
+    private String token;
 }
