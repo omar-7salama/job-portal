@@ -24,38 +24,46 @@ const ManageApplications = () => {
     fetchApplications();
   }, []);
 
-  const fetchApplications = async () => {
-    try {
-      const jobsResponse = await api.get(
-        `/api/jobs/employer/${employerId}`
+ const fetchApplications = async () => {
+  try {
+    const jobsResponse = await api.get(
+      `/api/jobs/employer/${employerId}`
+    );
+
+    console.log('Jobs Response:', jobsResponse.data);
+
+    const jobs: Job[] = jobsResponse.data;
+
+    let allApplications: any[] = [];
+
+    for (const job of jobs) {
+      const applicationsResponse = await api.get(
+        `/api/applications/job/${job.id}`
       );
 
-      const jobs: Job[] = jobsResponse.data;
+      console.log(
+        'Applications Response:',
+        applicationsResponse.data
+      );
 
-      let allApplications: any[] = [];
-
-      for (const job of jobs) {
-        const applicationsResponse = await api.get(
-          `/api/applications/job/${job.id}`
-        );
-
-        const apps = applicationsResponse.data.map((app: Application) => ({
+      const apps = applicationsResponse.data.map(
+        (app: Application) => ({
           ...app,
           jobTitle: job.title,
-        }));
+        })
+      );
 
-        allApplications = [...allApplications, ...apps];
-      }
-
-      setApplications(allApplications);
-    } catch (error) {
-      console.error(error);
-      alert('Failed to load applications');
-    } finally {
-      setLoading(false);
+      allApplications = [...allApplications, ...apps];
     }
-  };
 
+    setApplications(allApplications);
+  } catch (error) {
+    console.error(error);
+    alert('Failed to load applications');
+  } finally {
+    setLoading(false);
+  }
+};
   const updateStatus = async (
     applicationId: number,
     status: string
