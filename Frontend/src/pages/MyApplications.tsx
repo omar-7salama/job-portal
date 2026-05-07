@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../utils/api';
 import { Application } from '../types';
-import { getUserFromToken } from '../utils/auth';
 
 const MyApplications = () => {
   const [applications, setApplications] = useState<Application[]>([]);
@@ -13,11 +12,15 @@ const MyApplications = () => {
   }, []);
 
   const fetchApplications = async () => {
-    const user = getUserFromToken();
-    if (!user) return;
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      setError('You must be logged in to view applications.');
+      setLoading(false);
+      return;
+    }
 
     try {
-      const response = await api.get(`/api/applications/applicant/${user.id}`);
+      const response = await api.get(`/api/applications/applicant/${userId}`);
       setApplications(response.data);
     } catch (err: any) {
       setError('Failed to load applications');
@@ -51,15 +54,18 @@ const MyApplications = () => {
             <div key={app.id} className="bg-white p-4 rounded-lg shadow-md">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-xl font-semibold">{app.job?.title || 'Job Title'}</h2>
-                  <p className="text-gray-600">{app.job?.company || 'Company'}</p>
-                  <p className="text-gray-500">Applied on {new Date(app.appliedAt).toLocaleDateString()}</p>
+                  <h2 className="text-xl font-semibold">{app.jobId}</h2>
+                  <p className="text-gray-500">
+                    Applied on {new Date(app.appliedAt).toLocaleDateString()}
+                  </p>
                 </div>
                 <span className={`px-2 py-1 rounded text-sm ${getStatusColor(app.status)}`}>
                   {app.status}
                 </span>
               </div>
-              <p className="mt-2 text-gray-700">{app.coverLetter}</p>
+              {app.coverLetter && (
+                <p className="mt-2 text-gray-700">{app.coverLetter}</p>
+              )}
             </div>
           ))}
         </div>
