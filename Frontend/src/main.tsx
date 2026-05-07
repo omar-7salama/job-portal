@@ -7,6 +7,7 @@ import Login from './pages/Login';
 import Jobs from './pages/Jobs';
 import MyApplications from './pages/MyApplications';
 import PostJob from './pages/PostJob';
+import ManageApplications from './pages/ManageApplications';
 import './styles.css';
 
 const App = () => {
