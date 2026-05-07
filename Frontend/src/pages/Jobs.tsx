@@ -37,7 +37,7 @@ const Jobs = () => {
     if (search) {
       filtered = filtered.filter(job =>
         job.title.toLowerCase().includes(search.toLowerCase()) ||
-        job.company.toLowerCase().includes(search.toLowerCase()) ||
+        job.companyName.toLowerCase().includes(search.toLowerCase()) ||
         job.location.toLowerCase().includes(search.toLowerCase())
       );
     }
@@ -49,10 +49,18 @@ const Jobs = () => {
 
   const handleApply = async () => {
     if (!selectedJob) return;
+
+    const applicantId = localStorage.getItem('userId');
+    if (!applicantId) {
+      alert('You must be logged in to apply.');
+      return;
+    }
+
     setApplying(true);
     try {
       await api.post('/api/applications', {
         jobId: selectedJob.id,
+        applicantId,
         coverLetter,
       });
       alert('Application submitted successfully!');
@@ -98,7 +106,7 @@ const Jobs = () => {
         {filteredJobs.map(job => (
           <div key={job.id} className="bg-white p-4 rounded-lg shadow-md">
             <h2 className="text-xl font-semibold">{job.title}</h2>
-            <p className="text-gray-600">{job.company}</p>
+            <p className="text-gray-600">{job.companyName}</p>
             <p className="text-gray-500">{job.location}</p>
             <p className="text-green-600 font-semibold">${job.salary}</p>
             <span className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-sm">
