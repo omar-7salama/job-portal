@@ -41,6 +41,14 @@ const App = () => {
               </ProtectedRoute>
             }
           />
+          <Route
+          path="/manage-applications"
+          element={
+            <ProtectedRoute>
+              <ManageApplications />
+            </ProtectedRoute>
+          }
+        />
           <Route path="/" element={<Navigate to="/jobs" />} />
         </Routes>
       </div>
