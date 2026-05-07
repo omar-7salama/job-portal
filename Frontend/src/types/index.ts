@@ -3,13 +3,14 @@ export interface User {
   fullName: string;
   email: string;
   role: 'JOB_SEEKER' | 'EMPLOYER';
+  token?: string;
 }
 
 export interface Job {
   id: string;
   title: string;
   description: string;
-  company: string;
+  companyName: string;   // fixed: was 'company'
   location: string;
   salary: number;
   jobType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP';
@@ -43,13 +44,15 @@ export interface RegisterRequest {
 export interface CreateJobRequest {
   title: string;
   description: string;
-  company: string;
+  companyName: string;   // fixed: was 'company'
   location: string;
   salary: number;
   jobType: 'FULL_TIME' | 'PART_TIME' | 'CONTRACT' | 'INTERNSHIP';
+  employerId: string;
 }
 
 export interface ApplyJobRequest {
   jobId: string;
+  applicantId: string;
   coverLetter: string;
 }
