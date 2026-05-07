@@ -27,7 +27,13 @@ const Login = () => {
           email: form.email,
           password: form.password,
         } as LoginRequest);
+
+        // Save token, userId, and role to localStorage
         setToken(response.data.token);
+        localStorage.setItem('userId', response.data.id);
+        localStorage.setItem('userRole', response.data.role);
+        localStorage.setItem('userFullName', response.data.fullName);
+
         navigate('/jobs');
       } else {
         await api.post('/api/users/register', {
