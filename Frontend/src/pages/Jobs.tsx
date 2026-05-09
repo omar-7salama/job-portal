@@ -119,7 +119,7 @@ const Jobs = () => {
               <div>
                 <h2 style={{fontSize:'1.1rem',fontWeight:'600',marginBottom:'4px'}}>{job.title}</h2>
                 <p style={{color:'#4b5563',marginBottom:'2px'}}>{job.companyName}</p>
-                <p style={{color:'#6b7280',fontSize:'13px',marginBottom:'4px'}}>📍 {job.location}</p>
+                <p style={{color:'#6b7280',fontSize:'13px',marginBottom:'4px'}}>{job.location}</p>
                 <p style={{color:'#16a34a',fontWeight:'600',marginBottom:'8px'}}>${job.salary?.toLocaleString()}</p>
                 <span style={{background:'#dbeafe',color:'#1e40af',padding:'3px 10px',borderRadius:'12px',fontSize:'12px'}}>
                   {job.jobType.replace('_', ' ')}
