@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   # ─── Databases (Development) ──────────────────────────────
   userdb:
@@ -43,6 +42,15 @@ services:
   frontend:
     ports:
       - "3000:80"
+
+  # ─── Monitoring (Development) ─────────────────────────────
+  prometheus:
+    ports:
+      - "9090:9090"
+
+  grafana:
+    ports:
+      - "3001:3000"
 
 # ─── Volumes (Development) ─────────────────────────────────
 volumes:
