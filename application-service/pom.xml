@@ -10,7 +10,7 @@
         <version>3.3.0</version>
         <relativePath/>
     </parent>
-         
+
     <artifactId>application-service</artifactId>
     <version>1.0.0</version>
     <name>application-service</name>
@@ -44,6 +44,17 @@
             <version>${lombok.version}</version>
             <optional>true</optional>
         </dependency>
+
+        <!-- Actuator + Prometheus monitoring -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
