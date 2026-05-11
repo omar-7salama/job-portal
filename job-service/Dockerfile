@@ -2,11 +2,10 @@ FROM maven:3.9.9-eclipse-temurin-17-alpine AS build
 
 WORKDIR /app
 
-# Copy EVERYTHING (important)
+# Copy EVERYTHING
 COPY . .
 
-# Build only job-service module
-RUN mvn -pl job-service -am clean package -DskipTests
+RUN mvn -f pom.xml clean package -DskipTests
 
 FROM eclipse-temurin:17-jre-alpine
 
