@@ -231,6 +231,9 @@ This project is open source. Feel free to use and modify as needed.
 ## 👤 Author
 
 **Omar Salama** — Computer Science Student, Ain Shams University / University of East London
+**Habiba Fahd** — Computer Science Student, Ain Shams University / University of East London
+**Eman Mohamed** — Computer Science Student, Ain Shams University / University of East London
+**Maria Mark** — Computer Science Student, Ain Shams University / University of East London
 
 ## 📧 Questions?
 
